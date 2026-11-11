@@ -9,3 +9,181 @@ in the development cycle.
 
 More information about PlatformIO Unit Testing:
 - https://docs.platformio.org/en/latest/advanced/unit-testing/index.html
+
+documento https://docs.google.com/document/d/1U-_UmRFr3WhAimZNxIn4bTGY3VBQmgOXJozss15Q9r8/edit?usp=sharing
+
+
+	César Akira Abe Honda                                    NUSP: 17884099
+	Erick Amorim Mafra Bomfim                             NUSP: 17887849
+	Isaak Nunes                                                      NUSP: 17837954
+
+https://github.com/Erickamorim69/atividade_ResulacaoRaceCondition/tree/main 
+
+Avaliação do código do Erick :
+Testes iniciais:
+A race condition ocorre, pois  a thread_uma e a thread_duas tentam alterar o valor de contador simultaneamente, porém ao invés de o contador ser somado 2 vezes ele só é somado uma vez. Isso ocorre, pois o valor da variável global contador é pega no início das threads que são executadas “simultaneamente” e pega o mesmo valor x, e retornam o valor x + 1 a variável global, por isso ela é somada somente uma vez por ambas as threads. 
+
+Pré-condição: Para todos os casos a placa deve estar ligada com o código proposto instalado. 
+
+
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+…
+Prioridades iguais ( 7 ; 7 )
+A Race Condition ocorre e o contador tem o seu valor alterado em +1 após a execução de ambas as threads.
+
+2
+…
+Prioridades diferentes ( 7 ; 3 )
+A Race Condition ocorre e o contador tem o seu valor alterado em +1 após a execução de ambas as threads. Porém a thread 2 foi a primeira a ser executada devido a sua maior prioridade.
+
+3
+...
+Retirando o k_msleep(50)  que está entre a aquisição da variável global e a alteração do seu valor e prioridades iguais ( 7 ; 7 )
+A Race Condition não ocorrerá, pois as threads não liberaram o processador para a outra enquanto a tarefa não for terminada então a próxima thread pegará o valor do contador já atualizado.
+
+
+ 
+Correção do código:
+Para corrigir o código implementei 2 flags que indicam se uma thread está sendo executada para que a outra espere e só execute após o fim da outra thread. Isso faz com que após a execução de ambas as threads o resultado final seja x + 2. 
+
+
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+…
+Prioridades iguais ( 7 ; 7 )
+A Race Condition  não ocorre mais e o contador tem o seu valor alterado em +2 após a execução de ambas as threads.
+
+2
+…
+Prioridades diferentes ( 7 ; 3 )
+A Race Condition  não ocorre mais e o contador tem o seu valor alterado em +2 após a execução de ambas as threads. Porém a thread 2 foi a primeira a ser executada devido a sua maior prioridade.
+
+3
+...
+Retirando o k_msleep(50) que está entre a aquisição da variável global e a alteração do seu valor e prioridades iguais ( 7 ; 7 )
+A Race Condition não ocorrerá, pois além das flags,
+a lógica do código já impedia a race condition.
+
+ 
+	Avaliação: Após os testes o código parece estar corrigido, pois ele apresenta um comportamento estável e esperado.
+
+
+
+Avaliação do código do César: 
+Testes iniciais:
+	A race condition ocorre, pois  a thread_A e a thread_B tentam alterar o valor de saldo_vitrine
+simultaneamente, porém ao invés de saldo_vitrine permanecer igual,  ele  é incrementado ou decrementado. Isso ocorre, pois a variável local  saldo_pao adquire o valor de saldo_vitrine em tempos diferentes, não sincronizando corretamente a atualização, e causando uma discrepância do número de pães comidos/assados com os pães de saldo_vitrine
+
+Pré-condição: Para todos os casos a placa deve estar ligada com o código proposto instalado. 
+
+
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+...
+Prioridades iguais ( 5; 5 )
+O padeiro e os clientes simultaneamente realizaram uma alteração no valor saldo_vitrine, causando race condition periódico 
+2
+...
+Prioridades diferentes ( 7; 5)
+Race condition acontece somente de imediato depois do boot da freedom, e mesmo após um período prolongado, o () ainda apresenta o valor correto da diferença de pães assados/comidos  
+3
+...
+Comentando o k_msleep(50) que está entre a aquisição da variável global e a alteração do seu valor e prioridades iguais ( 5 ; 5 )
+A Race Condition não ocorrerá, pois as threads não liberaram o processador para a outra enquanto a tarefa não for terminada então a próxima thread pegará o valor do contador já atualizado.
+
+Correção do código:
+ 	para corrigir o código, apenas adicionei um mutex para impedir o race condition
+
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+...
+Prioridades iguais ( 5; 5 )
+Não houve Race condition com a adição do mutex. 
+2
+...
+Prioridades diferentes ( 7; 5)
+ Não houve Race condition, e a diferença de prioridades não causou Race condition
+3
+...
+Comentando o k_msleep(50) que está entre a aquisição da variável global e a alteração do seu valor e prioridades iguais ( 5 ; 5 )
+Não houve Race condition em ambos os casos, e a falta do delay não causou race condition
+
+
+
+
+
+
+Avaliação do código do Isaak :
+Testes iniciais:
+	Nesse código, a race condition ocorre pois a thread t1 têm exerce a mesma função que a thread t2 (Realizar incrementos na variável contador) e ambas não tem tempo de delay que façam elas entrarem em inatividade, o que faz com que elas sempre estejam ativas ao mesmo tempo e incrementando simultaneamente na mesma variável, assim o incremento de uma pode ser sobrescrito pelo incremento da outra.
+
+
+Pré condição: Para os 3 testes o computador deve ter o código compilado, não necessitando da placa.
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+...
+Threads sem tempo de delay.
+Não houve Race Condition: 
+Retirando o tempo de delay das Threads, faz com que ambas adicionassem 1000 incrementos na variável global, fazendo-a atingir o valor de 2000 incrementos.
+2
+...
+Threads com tempo de delay (Sleep) iguais.
+Houve Race Condition: 
+A imagem acima exibe uma que uma das threads, fez um incremento na variável global ignorando o incremento que a outra fez, tal situação ocorreu mais de uma vez, o que fez com que o resultado final do contador desse um valor menor do que o esperado.
+3
+...
+Threads com tempo de delay diferentes.
+Houve Race Condition: 
+Colocando tempos de delay diferentes para cada Thread, ocasionou em momentos em que o incremento de uma Thread sobrescreve o incremento da outra, causando uma situação de race condition.
+
+
+
+
+Correção do código:
+Para corrigir o código e evitar problemas de race condition eu implementei um sistema de mutex oriundo da biblioteca mutex.
+
+Caso de Teste
+Pré-condição
+Etapas de Teste
+Pós-condição Esperada
+1
+...
+Threads sem tempo de delay.
+Não houve Race Condition: 
+Retirando o tempo de delay das Threads, faz com que ambas adicionassem 1000 incrementos na variável global, fazendo-a atingir o valor de 2000 incrementos.
+2
+...
+Threads com tempo de delay (Sleep) iguais.
+Não houve Race Condition: 
+Agora com a implementação do sistema de Mutex, o erro que acontecia nessa situação não ocorre mais.
+3
+...
+Threads com tempo de delay diferentes.
+Não houve Race Condition: 
+Colocando a Thread 2 com um tempo de delay maior não fez com que houvesse race condition, o sistema de mutex preveniu esse problema.
+
+
+
+
+
+
+
+
+
+
