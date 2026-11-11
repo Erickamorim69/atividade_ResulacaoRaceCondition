@@ -40,9 +40,10 @@ void thread_A(void *p1, void *p2, void *p3) //padeiro
             pao++;
             int saldo_pao = saldo_vitrine;
             saldo_pao++;
-            k_msleep(1000);
+            k_msleep(50);
             saldo_vitrine = saldo_pao;
             printk("PADEIRO: Pão #%d pronto (Saldo vitrine = %d)\n", pao, saldo_vitrine);
+            k_msleep(1000);
         //}
         /* else
         {
@@ -67,9 +68,10 @@ void thread_B(void *p1, void *p2, void *p3) //clientes
             pao++;
             int saldo_pao = saldo_vitrine;
             saldo_pao--;
-            k_msleep(1500);
+            k_msleep(50);
             saldo_vitrine = saldo_pao;
             printk("CLIENTE: Peguei pão #%d (Saldo vitrine = %d)\n", pao, saldo_vitrine);    
+            k_msleep(1500);
         //}
         /* else
         {
