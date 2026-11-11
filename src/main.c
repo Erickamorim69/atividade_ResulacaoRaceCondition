@@ -52,7 +52,7 @@ void thread_B(void *p1, void *p2, void *p3) //clientes
         printk("CLIENTE: Peguei pão #%d (Saldo vitrine = %d)\n", pao, saldo_vitrine);    
         k_msleep(1500);
         //}
-        /* else
+        /* els
         {
             printk("CLIENTE: Vitrine vazia ================================\n");
             k_msleep(1500);
